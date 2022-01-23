@@ -3,11 +3,11 @@ schema:
   file: ./src/schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: YourContract
+    name: CryptogsReborn
     network: localhost
     source:
-      address: "{{localhost_YourContractAddress}}"
-      abi: YourContract
+      address: "{{localhost_CryptogsRebornAddress}}"
+      abi: CryptogsReborn
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -17,8 +17,8 @@ dataSources:
         - Purpose
         - Sender
       abis:
-        - name: YourContract
-          file: ./abis/localhost_YourContract.json
+        - name: CryptogsReborn
+          file: ./abis/localhost_CryptogsReborn.json
       eventHandlers:
         - event: SetPurpose(address,string)
           handler: handleSetPurpose
