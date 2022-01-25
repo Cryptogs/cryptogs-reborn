@@ -1,5 +1,3 @@
-[comment]: <> (Please name the PR the same name as the branch (dework ID - ticket name))
-
 ## Purpose:
 [comment]: <> (What does your PR address or do?)
 
