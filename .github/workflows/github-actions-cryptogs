@@ -1,0 +1,29 @@
+name: Cryptogs Github Actions
+on:
+  workflow_dispatch:
+  push:
+    branches: 
+      - master
+jobs:
+  tag-and-release:
+    runs-on: ubuntu-latest
+    outputs:
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+      new_release_major_version: ${{ steps.semantic.outputs.new_release_major_version }}
+      new_release_minor_version: ${{ steps.semantic.outputs.new_release_minor_version }}
+      new_release_patch_version: ${{ steps.semantic.outputs.new_release_patch_version }}
+      new_release_channel: ${{ steps.semantic.outputs.new_release_channel }}
+      new_release_notes: ${{ steps.semantic.outputs.new_release_notes }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Semantic Release
+      uses: cycjimmy/semantic-release-action@v2
+      id: semantic
+      with:
+        semantic_version: 16
+        branch: master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
