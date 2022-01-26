@@ -1,14 +1,13 @@
 name: Cryptogs Github Actions
 on:
+  workflow_dispatch:
   push:
     branches: 
       - master
-      
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 jobs:
   tag-and-release:
     runs-on: ubuntu-latest
+    # Map outputs of the semantic-release step for future job
     outputs:
       new_release_published: ${{ steps.semantic.outputs.new_release_published }}
       new_release_version: ${{ steps.semantic.outputs.new_release_version }}
@@ -18,10 +17,14 @@ jobs:
       new_release_channel: ${{ steps.semantic.outputs.new_release_channel }}
       new_release_notes: ${{ steps.semantic.outputs.new_release_notes }}
     steps:
-  - name: Checkout
-    uses: actions/checkout@v2
-  - name: Semantic Release
-    uses: cycjimmy/semantic-release-action@v2
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Semantic Release
+      uses: cycjimmy/semantic-release-action@v2
+      id: semantic
+      with:
+        semantic_version: 16
+        branch: master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
