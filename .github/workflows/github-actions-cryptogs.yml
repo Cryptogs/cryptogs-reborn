@@ -1,16 +1,30 @@
-name: Greetings
-
-on: [pull_request, issues]
-
+name: Cryptogs Github Actions
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 jobs:
-  greeting:
+  tag-and-release:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      pull-requests: write
+    # Map outputs of the semantic-release step for future job
+    outputs:
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+      new_release_major_version: ${{ steps.semantic.outputs.new_release_major_version }}
+      new_release_minor_version: ${{ steps.semantic.outputs.new_release_minor_version }}
+      new_release_patch_version: ${{ steps.semantic.outputs.new_release_patch_version }}
+      new_release_channel: ${{ steps.semantic.outputs.new_release_channel }}
+      new_release_notes: ${{ steps.semantic.outputs.new_release_notes }}
     steps:
-    - uses: actions/first-interaction@v1
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        issue-message: 'Thanks for creating an issue for Cryptogs!'
-        pr-message: 'Woo! Nice work!'
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v2
+        id: semantic
+        with:
+          semantic_version: 16
+          branch: master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
