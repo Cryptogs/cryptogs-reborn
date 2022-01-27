@@ -10,7 +10,7 @@ contract SlammerTime {
     cryptogs=_cryptogs;
   }
 
-  function startSlammerTime(address _player1,uint256[5] memory _id1,address _player2, uint256[5] memory _id2) public returns (bool) {
+  function startSlammerTime(address _player1, uint256[5] memory _id1, address _player2, uint256[5] memory _id2) public returns (bool) {
     //only the cryptogs contract should be able to hit it
     require(msg.sender==cryptogs);
 
