@@ -1,0 +1,39 @@
+{
+  "name": "reactapp",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "create-react-class": "^15.6.3",
+    "eth-sig-util": "^1.4.2",
+    "express": "^4.16.2",
+    "express-http-proxy": "^1.1.0",
+    "form-data": "^2.3.2",
+    "helmet": "^3.12.0",
+    "https": "^1.0.0",
+    "loaders.css": "^0.1.2",
+    "qrcode-react": "^0.1.16",
+    "react": "^16.2.0",
+    "react-blockies": "^1.2.2",
+    "react-cookies": "^0.1.0",
+    "react-dom": "^16.2.0",
+    "react-draggable": "^3.0.5",
+    "react-dropzone": "^4.2.9",
+    "react-helmet": "^5.2.0",
+    "react-motion": "^0.5.2",
+    "react-phone-number-input": "^1.0.4",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.1.1",
+    "react-stack-grid": "^0.7.1",
+    "react-web-notification": "^0.3.1",
+    "s3": "^4.4.0",
+    "web3": "^1.0.0-beta.30"
+  },
+  "scripts": {
+    "start": "PORT=8000 react-scripts start",
+    "build": "react-scripts build",
+    "deploy": "node deploy;node invalidate",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
