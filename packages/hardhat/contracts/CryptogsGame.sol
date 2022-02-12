@@ -21,7 +21,7 @@ contract CryptogsGame is VRFConsumerBase, Pausable {
 
     // TODO: decide if we want chance to flip to increase in later rounds like in PizzaParlor.sol
 
-    // The number of blocks that can pass until the opponent can no longer call runGame()
+    // The number of blocks that can pass until the opponent can no longer call playGame()
     uint256 blocksUntilExpiration = 40;
 
     // Chainlink VRF
