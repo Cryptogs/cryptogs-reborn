@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-// @author cosmoburn.eth, deepe.eth
-
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
+// @author cosmoburn.eth, deepe.eth
 contract CryptogsRebornGenesis is VRFConsumerBase, ERC1155, Ownable, Pausable {
   uint256 public numPogTypes = 73;
   uint256 public numMinted;
