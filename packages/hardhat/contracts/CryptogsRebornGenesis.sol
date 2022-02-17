@@ -51,15 +51,21 @@ contract CryptogsRebornGenesis is VRFConsumerBase, ERC1155, Ownable, Pausable {
         override
     {
         address minter = _vrfRequestIdToMinterAddress[requestId];
+
         uint256[] memory pogIds;
         uint256[] memory amounts;
+
         for (uint256 i = 0; i < 5; i++) {
             pogIds[i] =
                 (uint256(keccak256(abi.encode(randomness, i))) % numPogTypes) +
                 1;
             amounts[i] = 1;
         }
+
         _mintBatch(minter, pogIds, amounts, "");
+
+        numMinted += 5;
+        packsMintedByAddress[minter] += 1;
     }
 
     function addToWhitelist(address[] calldata _addresses) external onlyOwner {
