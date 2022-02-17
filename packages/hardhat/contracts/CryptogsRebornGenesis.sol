@@ -6,11 +6,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
-// @author cosmoburn.eth, deepe.eth
 contract CryptogsRebornGenesis is VRFConsumerBase, ERC1155, Ownable, Pausable {
     uint256 public numPogTypes = 73;
     uint256 public numMinted;
-    uint256 public maxTokenSupply = 3675;
+    uint256 public maxTokenSupply = 18375;
     mapping(address => uint256) private packsMintedByAddress;
 
     bool public whitelistOnly = true;
@@ -23,7 +22,7 @@ contract CryptogsRebornGenesis is VRFConsumerBase, ERC1155, Ownable, Pausable {
 
     constructor(address _vrfCoordinator, address _linkToken)
         VRFConsumerBase(_vrfCoordinator, _linkToken)
-        ERC1155("https://game.example/api/item/{id}.json")
+        ERC1155("https://cryptogs-genesis-metadata.vercel.app/api/{id}")
     {
         keyHash = 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4;
         fee = 0.0001 * 10**18; // 0.0001 LINK
@@ -80,6 +79,10 @@ contract CryptogsRebornGenesis is VRFConsumerBase, ERC1155, Ownable, Pausable {
 
     function setPaused(bool _state) external onlyOwner {
         _state ? _pause() : _unpause();
+    }
+
+    function setURI(string memory _newuri) external onlyOwner {
+        _setURI(_newuri);
     }
 
     function _getRandomNumber() private returns (bytes32 requestId) {
