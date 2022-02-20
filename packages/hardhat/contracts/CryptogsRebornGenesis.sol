@@ -16,10 +16,10 @@ contract CryptogsRebornGenesis is
 {
     bytes32 public constant DEV = keccak256("DEV");
 
-    uint256 public numPogTypes = 73;
+    uint256 public constant numPogTypes = 73;
+    uint256 public constant pogsPerPack = 10;
+    uint256 public constant maxTokenSupply = pogsPerPack * 2000;
     uint256 public numMinted;
-    uint256 public pogsPerPack = 10;
-    uint256 public maxTokenSupply = pogsPerPack * 2000;
     uint256 public packsAllowedPerAddress = 1;
     mapping(address => uint256) private packsMintedByAddress;
 
@@ -34,6 +34,7 @@ contract CryptogsRebornGenesis is
         address to;
         uint256 amount;
     }
+
     mapping(bytes32 => MintRequest) private _vrfRequestIdToMintRequest;
 
     event PogsMinted(address indexed _to, bytes32 indexed _vrfRequestId, uint256 _amount);
