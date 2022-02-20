@@ -2,13 +2,15 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
 contract CryptogsRebornGenesis is
-    VRFConsumerBase,
     ERC1155,
+    VRFConsumerBase,
+    Ownable,
     AccessControlEnumerable,
     Pausable
 {
@@ -47,7 +49,6 @@ contract CryptogsRebornGenesis is
         keyHash = 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4;
         fee = 0.0001 * 10**18; // 0.0001 LINK
 
-        // TODO: change to poapathon.eth's address after testing
         _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
 
         for (uint256 i = 0; i < _devs.length; i++) {
@@ -74,7 +75,7 @@ contract CryptogsRebornGenesis is
     }
 
     function giftPacks(address _to, uint256 _numPacks) public onlyRole(DEV) {
-        _mintPogs(_to, _numPacks);
+        _mintPogs(_to, _numPacks * pogsPerPack);
     }
 
     function _mintPogs(address _to, uint256 _amount) internal {
@@ -128,7 +129,15 @@ contract CryptogsRebornGenesis is
         }
     }
 
-    function setPogsAllowedPerAddress(uint256 _packsAllowedPerAddress)
+    function isWhitelisted(address _addr) external view returns (bool) {
+        return whitelist[_addr];
+    }
+
+    function mintedMaxPacks(address _addr) external view returns (bool) {
+        return packsMintedByAddress[_addr] >= packsAllowedPerAddress;
+    }
+
+    function setPacksAllowedPerAddress(uint256 _packsAllowedPerAddress)
         external
         onlyRole(DEV)
     {
