@@ -75,11 +75,12 @@ contract CryptogsGame is ERC1155Holder, VRFConsumerBase, Pausable, Ownable {
 
     // function to flatten a ERC1155 (tokenId, amount) array
 
-    function getArraySum(uint256[] memory _tokenId,  uint256[] memory _amount) public pure returns (uint256[] memory flatId, uint256[] memory flatAmount){
+    function getArraySum(uint256[] memory _tokenId,  uint256[] memory _amount) public pure returns (uint256[] memory , uint256[] memory ){
         require(_tokenId.length == _amount.length);
-        uint256[] memory flatId; 
-        uint256[] memory flatAmount;
         uint j = 0;
+        uint256[] memory flatId = new uint256[](getArraySum(_amount));
+        uint256[] memory flatAmount = new uint256[](getArraySum(_amount));
+
         for (uint i = 0; i < _tokenId.length; i++){
             while(_amount[i] != 0){
                 flatId[j] = _tokenId[i];
@@ -88,6 +89,7 @@ contract CryptogsGame is ERC1155Holder, VRFConsumerBase, Pausable, Ownable {
                 j += 1;
             }
         }
+        return(flatId, flatAmount);
     }
 
 
@@ -156,7 +158,7 @@ contract CryptogsGame is ERC1155Holder, VRFConsumerBase, Pausable, Ownable {
         bytes32 requestId = requestRandomness(keyHash, fee);
         _vrfRequestIdToGameId[requestId] = _gameId;
         
-        emit gamePlay(_gameId, game0.creator, _msgSender(), RequestId);
+        emit gameJoin(_gameId, game0.creator, _msgSender(), requestId);
 
     }
 
@@ -168,11 +170,12 @@ contract CryptogsGame is ERC1155Holder, VRFConsumerBase, Pausable, Ownable {
         uint256 _gameId = _vrfRequestIdToGameId[requestId];
         // get game object
         Game storage game0 = games[_gameId];
+        uint256 sumAmount = getArraySum(game0.creatorTogsAmount)+ getArraySum(game0.opponentTogsAmount);
 
         // flipped togs
-        uint256[] memory flippedTogs;
-        uint256[] memory amountPlayer0;
-        uint256[] memory amountPlayer1;
+        uint256[] memory flippedTogs = new uint256[](sumAmount);
+        uint256[] memory amountPlayer0 = new uint256[](sumAmount);
+        uint256[] memory amountPlayer1 = new uint256[](sumAmount);
 
         uint256 _rand;
         uint256 j = 0;
@@ -230,8 +233,8 @@ contract CryptogsGame is ERC1155Holder, VRFConsumerBase, Pausable, Ownable {
         games[_gameId].withdrawed = true;
         games[_gameId].gameState = 4;
         
-        uint256[] memory tmp0 = new uint256[](5);
-        uint256[] memory tmp1 = new uint256[](5);
+        uint256[] memory tmp0 = new uint256[](games[_gameId].creatorTogsAmount.length);
+        uint256[] memory tmp1 = new uint256[](games[_gameId].opponentTogsAmount.length);
 
         games[_gameId].creatorTogsAmount = tmp0;
         games[_gameId].opponentTogsAmount = tmp1;
