@@ -96,7 +96,7 @@ contract CryptogsGame is ERC1155Holder, VRFConsumerBase, Pausable, Ownable {
 
 
     // gameInit event: player 0 set up the game
-    event gameInit(uint256 indexed gameId, address indexed sender, uint256 indexed expirationBlock);
+    event gameInit(uint256 indexed GameId, address indexed Creator, uint256 indexed ExpirationBlock);
 
     // player 0 init Game 
     function initGame(uint256[] calldata _creatorTogs, uint256[] calldata _amounts) public {
@@ -133,7 +133,7 @@ contract CryptogsGame is ERC1155Holder, VRFConsumerBase, Pausable, Ownable {
     }
 
     // gameJoin event: player 1 joins the game
-    event gameJoin(uint256 indexed GameId, address indexed player0, address indexed player1, bytes32 RequestId);
+    event gameJoin(uint256 indexed GameId, address indexed Player0, address indexed Player1, bytes32 RequestId);
 
     // player 1 join Game 
     function joinPlay(uint256 _gameId, uint256[] calldata _joinTogs, uint256[] calldata _amounts) public {
@@ -163,7 +163,7 @@ contract CryptogsGame is ERC1155Holder, VRFConsumerBase, Pausable, Ownable {
     }
 
 
-    event FlipTogs(uint256 indexed gameId, address indexed player0,  address indexed player1, uint256[] flippedTogs, uint256[] amountPlayer0, uint256[] amountPlayer1);     
+    event flipTogs(uint256 indexed GameId, address indexed Player0,  address indexed Player1, uint256[] FlippedTogs, uint256[] AmountPlayer0, uint256[] AmountPlayer1);     
     // Once chainlink VRF generates a random number, this function will be called automatically to transfer flipped togs to players.
     function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
         // get gameId by vrf requestId
@@ -219,31 +219,31 @@ contract CryptogsGame is ERC1155Holder, VRFConsumerBase, Pausable, Ownable {
     }
 
 
-    event WithdrawTogs (uint256 indexed GameId, address indexed creator, address indexed opponent);
+    event withdrawTogs (uint256 indexed GameId, address indexed Creator);
     // Withdraw Togs when game completed or expired
     function withdrawTogs (uint256 _gameId) public {
-        require(_gameId <= gameId);
-        require(games[_gameId].gameState == 3 || games[_gameId].expirationBlock < block.number); // game finished or expired
-        require(games[_gameId].withdrawed == false);
+        require(_gameId <= gameId); // game exists
+        require(games[_gameId].expirationBlock < block.number); // game expired
+        require(games[_gameId].withdrawed == false & games[_gameId].gameState == 1); // not withdrawed
 
         Cryptogs.safeBatchTransferFrom(address(this), games[_gameId].creator, games[_gameId].creatorTogs, games[_gameId].creatorTogsAmount, "");
-        Cryptogs.safeBatchTransferFrom(address(this), games[_gameId].opponent, games[_gameId].opponentTogs, games[_gameId].opponentTogsAmount, "");
+        //Cryptogs.safeBatchTransferFrom(address(this), games[_gameId].opponent, games[_gameId].opponentTogs, games[_gameId].opponentTogsAmount, "");
         
         // end the game
         games[_gameId].withdrawed = true;
         games[_gameId].gameState = 4;
         
         uint256[] memory tmp0 = new uint256[](games[_gameId].creatorTogsAmount.length);
-        uint256[] memory tmp1 = new uint256[](games[_gameId].opponentTogsAmount.length);
+        // uint256[] memory tmp1 = new uint256[](games[_gameId].opponentTogsAmount.length);
+        emit WithdrawTogs(_gameId, games[_gameId].creator);
 
         games[_gameId].creatorTogsAmount = tmp0;
-        games[_gameId].opponentTogsAmount = tmp1;
+        // games[_gameId].opponentTogsAmount = tmp1;
 
-        emit WithdrawTogs(_gameId, games[_gameId].creator, games[_gameId].opponent);
 
     }
 
-    event WithdrawToken(address indexed TokenContract, uint256 indexed Amount);
+    event withdrawToken(address indexed TokenContract, uint256 indexed Amount);
     // withdraw token: LINK (only owner)
     function withdrawToken(address _tokenContract, uint256 _amount) public onlyOwner {
         IERC20 tokenContract = IERC20(_tokenContract);
